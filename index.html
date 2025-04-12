@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSec Arsenal: Kali Linux Tool Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-green: #0aff0a;
+            --neon-pink: #ff21eb;
+            --neon-purple: #bd00ff;
+            --neon-yellow: #fffc00;
+            --dark-bg: #0a0a16;
+            --darker-bg: #05050d;
+            --card-bg: #10101e;
+            --terminal-bg: #050510;
+        }
+        
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-green) var(--dark-bg);
+        }
+        
+        *::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        *::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+        
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--neon-green);
+            border-radius: 3px;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: #f0f0f0;
+            font-family: 'Share Tech Mono', monospace;
+            background-image: 
+                radial-gradient(circle at 30% 10%, rgba(10, 255, 10, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 80% 20%, rgba(0, 243, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 20% 60%, rgba(189, 0, 255, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 70% 90%, rgba(255, 33, 235, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+        
+        .cyber-header {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 243, 255, 0.6);
+        }
+        
+        .cyber-subheader {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .cyber-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .cyberpunk-btn {
+            position: relative;
+            padding: 0.5rem 1.2rem;
+            background-color: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cyberpunk-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            opacity: 0.2;
+            transition: all 0.5s;
+            z-index: -1;
+        }
+        
+        .cyberpunk-btn:hover {
+            background-color: rgba(10, 255, 10, 0.1);
+            box-shadow: 0 0 8px var(--neon-green);
+            transform: translateY(-2px);
+        }
+        
+        .cyberpunk-btn:hover::before {
+            left: 100%;
+        }
+        
+        .cyberpunk-btn.active {
+            background-color: rgba(10, 255, 10, 0.2);
+            box-shadow: 0 0 12px var(--neon-green);
+        }
+        
+        .terminal {
+            background-color: var(--terminal-bg);
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            color: var(--neon-green);
+            border: 1px solid rgba(10, 255, 10, 0.3);
+            box-shadow: 0 0 10px rgba(10, 255, 10, 0.15), inset 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: rgba(30, 30, 50, 0.6);
+            border-radius: 5px 5px 0 0;
+            z-index: 1;
+        }
+        
+        .terminal::after {
+            content: '⬤ ⬤ ⬤';
+            position: absolute;
+            top: 4px;
+            left: 10px;
+            color: #ff5f56;
+            z-index: 2;
+            font-size: 12px;
+            letter-spacing: 5px;
+        }
+        
+        .terminal-content {
+            margin-top: 10px;
+            position: relative;
+            z-index: 0;
+        }
+        
+        .command {
+            color: var(--neon-green);
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .command::before {
+            content: "┌──[kali㉿kali]─[~]";
+            color: var(--neon-pink);
+            display: block;
+            margin-bottom: 2px;
+            margin-left: -15px;
+        }
+        
+        .command::after {
+            content: "└─$";
+            color: var(--neon-pink);
+            position: absolute;
+            left: -15px;
+            top: 20px;
+        }
+        
+        .response {
+            color: #cccccc;
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+            margin-top: 5px;
+        }
+        
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tool-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(10, 255, 10, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            animation: glowingBorder 3s linear infinite;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 10px rgba(10, 255, 10, 0.2);
+            border-color: rgba(10, 255, 10, 0.5);
+        }
+        
+        .tool-card:hover .tool-icon {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .section-title {
+            border-bottom: 2px solid var(--neon-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: var(--neon-blue);
+            animation: scanline 3s linear infinite;
+        }
+        
+        .disclaimer {
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.8), rgba(255, 87, 34, 0.5));
+            border-left: 4px solid #ff5722;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(5, 5, 13, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(10, 255, 10, 0.2);
+        }
+        
+        .nav-item {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(10, 255, 10, 0.1);
+            box-shadow: 0 0 8px rgba(10, 255, 10, 0.3);
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(10, 255, 10, 0.2), transparent);
+            transition: all 0.5s;
+        }
+        
+        .nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .nav-item.active {
+            background-color: rgba(10, 255, 10, 0.15);
+            box-shadow: 0 0 10px rgba(10, 255, 10, 0.4);
+        }
+        
+        .category-badge {
+            font-size: 0.7rem;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: white;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .cyber-search {
+            background-color: rgba(10, 10, 25, 0.8);
+            border: 1px solid var(--neon-green);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            width: 100%;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s;
+            box-shadow: 0 0 5px rgba(10, 255, 10, 0.2);
+        }
+        
+        .cyber-search:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: rgba(0, 243, 255, 0.1);
+            z-index: 0;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .tool-detail-header {
+            border-bottom: 1px solid var(--neon-green);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chip {
+            display: inline-block;
+            padding: 3px 10px;
+            margin: 3px;
+            background-color: rgba(10, 255, 10, 0.1);
+            border: 1px solid var(--neon-green);
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-value {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            animation: progressAnimation 2s linear forwards;
+            width: 0;
+            border-radius: 2px;
+        }
+        
+        .cyber-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        
+        @keyframes scanline {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes glowingBorder {
+            0% {
+                background-position: 0%;
+            }
+            100% {
+                background-position: 400%;
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes progressAnimation {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+        
+        .info-box {
+            background-color: rgba(0, 243, 255, 0.08);
+            border-left: 3px solid var(--neon-blue);
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning-box {
+            background-color: rgba(255, 252, 0, 0.08);
+            border-left: 3px solid var(--neon-yellow);
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .filter-btn {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            background-color: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+        }
+        
+        #tool-count {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-green);
+        }
+        
+        .tool-complexity {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+        }
+        
+        .complexity-beginner {
+            color: var(--neon-green);
+        }
+        
+        .complexity-intermediate {
+            color: var(--neon-yellow);
+        }
+        
+        .complexity-advanced {
+            color: var(--neon-pink);
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            background-color: var(--card-bg);
+            border-top: 1px solid rgba(10, 255, 10, 0.2);
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink), var(--neon-green));
+            animation: glowingBorder 3s linear infinite;
+        }
+
+        .creator-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, rgba(10, 255, 10, 0.1), rgba(0, 243, 255, 0.1));
+            border: 1px solid var(--neon-green);
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-green);
+            margin-bottom: 10px;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            margin: 0 10px;
+            color: var(--neon-blue);
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--neon-pink);
+            transform: translateY(-3px);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--neon-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: rgba(10, 255, 10, 0.1);
+            box-shadow: 0 0 15px rgba(10, 255, 10, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="cyber-matrix"></div>
+    <div class="scanline"></div>
+    
+    <header class="bg-opacity-90 bg-gray-900 p-6 shadow-lg">
+        <div class="container mx-auto flex flex-wrap items-center justify-between">
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <svg height="60" width="60" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.8));">
+                        <path fill="#00f3ff" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2a9.98 9.98 0 0 1 8 4H4a9.98 9.98 0 0 1 8-4zm0 10.5c-1.381 0-2.5-1.119-2.5-2.5s1.119-2.5 2.5-2.5 2.5 1.119 2.5 2.5-1.119 2.5-2.5 2.5zM4 18a9.98 9.98 0 0 1-2-6h20a9.98 9.98 0 0 1-2 6H4z"/>
+                    </svg>
+                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                        <span class="text-xs font-bold text-white">K</span>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold cyber-header">CyberSec <span style="color: var(--neon-green);">Arsenal</span></h1>
+                    <p class="text-gray-400 cyber-subheader">Advanced Kali Linux Tool Documentation </p>
+                    <p class="text-gray-400 cyber-subheader">By Roshan Shrestha</p>
+                </div>
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <div class="relative">
+                    <input type="text" id="search-tools" placeholder="Search tools..." class="cyber-search">
+                    <div class="absolute right-3 top-2 text-green-400">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="disclaimer mx-auto container my-6 p-4">
+        <h3 class="font-bold text-xl"><i class="fas fa-exclamation-triangle mr-2"></i> Educational Purposes Only</h3>
+        <p>This comprehensive documentation is designed strictly for cybersecurity education, ethical hacking training, and professional penetration testing. Using these tools against systems without explicit authorization is illegal and violates computer fraud and abuse laws. Always practice in controlled, authorized environments and follow responsible disclosure protocols.</p>
+    </div>
+
+    <div class="container mx-auto px-4">
+        <div class="nav-container mb-8 rounded-lg">
+            <nav class="bg-opacity-95 bg-gray-900 p-4 rounded-lg overflow-x-auto whitespace-nowrap">
+                <ul class="flex space-x-2">
+                    <li class="nav-item active" data-section="intro"><i class="fas fa-home mr-2"></i>Introduction</li>
+                    <li class="nav-item" data-section="network"><i class="fas fa-network-wired mr-2"></i>Network Analysis</li>
+                    <li class="nav-item" data-section="wireless"><i class="fas fa-wifi mr-2"></i>Wireless Security</li>
+                    <li class="nav-item" data-section="web"><i class="fas fa-globe mr-2"></i>Web Security</li>
+                    <li class="nav-item" data-section="vuln"><i class="fas fa-bug mr-2"></i>Vulnerability Assessment</li>
+                    <li class="nav-item" data-section="exploitation"><i class="fas fa-user-secret mr-2"></i>Exploitation</li>
+                    <li class="nav-item" data-section="password"><i class="fas fa-key mr-2"></i>Password Security</li>
+                    <li class="nav-item" data-section="forensics"><i class="fas fa-search mr-2"></i>Digital Forensics</li>
+                    <li class="nav-item" data-section="reverse"><i class="fas fa-code mr-2"></i>Reverse Engineering</li>
+                    <li class="nav-item" data-section="crypto"><i class="fas fa-lock mr-2"></i>Cryptography</li>
+                    <li class="nav-item" data-section="social"><i class="fas fa-users mr-2"></i>Social Engineering</li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="mb-6">
+            <div class="flex flex-wrap items-center">
+                <h2 class="text-2xl font-bold mb-4 mr-4 cyber-subheader">Filter by Complexity:</h2>
+                <button class="filter-btn active" data-complexity="all">All</button>
+                <button class="filter-btn" data-complexity="beginner"><i class="fas fa-seedling mr-1"></i> Beginner</button>
+                <button class="filter-btn" data-complexity="intermediate"><i class="fas fa-user-ninja mr-1"></i> Intermediate</button>
+                <button class="filter-btn" data-complexity="advanced"><i class="fas fa-skull mr-1"></i> Advanced</button>
+            </div>
+            <div class="mt-2">
+                <span class="text-sm">Showing <span id="tool-count" class="font-bold">100</span> tools</span>
+            </div>
+        </div>
+
+        <section id="intro" class="mb-12">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-book mr-2"></i>Introduction to Kali Linux</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="mb-4">Kali Linux is a Debian-derived Linux distribution designed for digital forensics and penetration testing. It is maintained and funded by Offensive Security Ltd, featuring over 600 preinstalled penetration-testing programs.</p>
+                    <p class="mb-4">This advanced documentation provides detailed information on 100 essential cybersecurity tools available in Kali Linux and how they can be used in a controlled, ethical environment for learning cybersecurity concepts, preparing for certifications, and conducting authorized security assessments.</p>
+                    <p class="mb-4">The tools are categorized by their primary function and include detailed command syntax, usage examples, and practical applications. Each tool also includes a complexity rating to help you understand the learning curve.</p>
+                    
+                    <div class="info-box">
+                        <h4 class="font-bold"><i class="fas fa-info-circle mr-2"></i>Getting Started</h4>
+                        <p>Select a category from the navigation menu above to explore different security tools and their commands. Use the search function to find specific tools by name or functionality.</p>
+                    </div>
+                    
+                    <div class="warning-box mt-6">
+                        <h4 class="font-bold"><i class="fas fa-shield-alt mr-2"></i>Ethical Guidelines</h4>
+                        <ul class="list-disc pl-5 mt-2">
+                            <li>Never use these tools on systems without explicit permission</li>
+                            <li>Document all security testing activities</li>
+                            <li>Follow responsible disclosure policies</li>
+                            <li>Maintain confidentiality of client data</li>
+                            <li>Respect privacy and legal boundaries</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="terminal">
+                        <div class="terminal-content">
+                            <div class="command">uname -a</div>
+                            <div class="response">Linux kali 6.1.0-kali5-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.20-1kali1 (2023-05-02) x86_64 GNU/Linux</div>
+                            <div class="command">cat /etc/os-release | grep PRETTY_NAME</div>
+                            <div class="response">PRETTY_NAME="Kali GNU/Linux Rolling"</div>
+                            <div class="command">whoami && id</div>
+                            <div class="response">root
+uid=0(root) gid=0(root) groups=0(root)</div>
+                            <div class="command">apt list --installed | grep -c "^"</div>
+                            <div class="response">3154
+# Kali Linux includes thousands of pre-installed security tools</div>
+                            <div class="command">ls -la /usr/share/wordlists/ | head -5</div>
+                            <div class="response">total 3.8G
+drwxr-xr-x  9 root root 4.0K Mar 15 00:29 .
+drwxr-xr-x 626 root root  20K Mar 15 01:51 ..
+drwxr-xr-x  2 root root 4.0K Mar 15 00:29 dirb
+drwxr-xr-x  2 root root 4.0K Mar 15 00:29 dirbuster</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2 cyber-subheader">System Requirements</h4>
+                            <ul class="space-y-1">
+                                <li><i class="fas fa-microchip mr-2 text-blue-400"></i>2 GHz+ dual-core CPU</li>
+                                <li><i class="fas fa-memory mr-2 text-blue-400"></i>4 GB RAM (8+ recommended)</li>
+                                <li><i class="fas fa-hdd mr-2 text-blue-400"></i>20 GB disk space</li>
+                                <li><i class="fas fa-tv mr-2 text-blue-400"></i>1024×768 resolution</li>
+                                <li><i class="fas fa-network-wired mr-2 text-blue-400"></i>Internet connectivity</li>
+                            </ul>
+                        </div>
+                        <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2 cyber-subheader">Learning Resources</h4>
+                            <ul class="space-y-1">
+                                <li><i class="fas fa-book mr-2 text-green-400"></i>Official Documentation</li>
+                                <li><i class="fas fa-graduation-cap mr-2 text-green-400"></i>Kali Training</li>
+                                <li><i class="fas fa-certificate mr-2 text-green-400"></i>OSCP Certification</li>
+                                <li><i class="fas fa-users mr-2 text-green-400"></i>Community Forums</li>
+                                <li><i class="fas fa-youtube mr-2 text-green-400"></i>Tutorial Videos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="network" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-network-wired mr-2"></i>Network Analysis Tools</h2>
+            <p class="mb-6">Network analysis tools allow security professionals to inspect, analyze, and manipulate network traffic. These tools are essential for understanding network vulnerabilities, performing reconnaissance, and testing network security controls.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 1: Nmap -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-search tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Nmap</h3>
+                        <div>
+                            <span class="category-badge">Reconnaissance</span>
+                            <span class="category-badge">Port Scanning</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Network Mapper is a utility for network discovery and security auditing. It uses raw IP packets to determine available hosts, services, OS details, and more.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">nmap -sV -p 1-1000 192.168.1.1</div>
+                            <div class="response">Starting Nmap 7.93 ( https://nmap.org )
+Nmap scan report for 192.168.1.1
+Host is up (0.0043s latency).
+Not shown: 995 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.4p1
+80/tcp open  http    Apache httpd 2.4.48
+443/tcp open  https   Apache httpd 2.4.48</div>
+                            <div class="command">nmap -A -T4 scanme.nmap.org</div>
+                            <div class="response"># Aggressive scan with OS detection, version detection, script scanning, and traceroute</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 2: Wireshark -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-ethernet tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Wireshark</h3>
+                        <div>
+                            <span class="category-badge">Packet Analysis</span>
+                            <span class="category-badge">Traffic Inspection</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Wireshark is a network protocol analyzer that lets you capture and interactively browse the traffic running on a computer network. It has deep inspection capabilities for hundreds of protocols.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">wireshark</div>
+                            <div class="response"># Launches Wireshark GUI for packet capture and analysis</div>
+                            <div class="command">tshark -i eth0 -c 10 -w capture.pcap</div>
+                            <div class="response"># Captures 10 packets from eth0 interface and saves to capture.pcap</div>
+                            <div class="command">tshark -r capture.pcap -Y "http"</div>
+                            <div class="response"># Reads capture file and displays only HTTP packets</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 3: TCPDump -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-exchange-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">TCPDump</h3>
+                        <div>
+                            <span class="category-badge">Packet Capture</span>
+                            <span class="category-badge">Traffic Analysis</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">TCPDump is a powerful command-line packet analyzer that can be used to capture or filter TCP/IP packets received or transferred over a network. It's lightweight and works on systems where graphical tools aren't available.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">tcpdump -i eth0 -n</div>
+                            <div class="response"># Captures packets on eth0 interface without DNS resolution</div>
+                            <div class="command">tcpdump -i eth0 port 80</div>
+                            <div class="response"># Captures only traffic on port 80</div>
+                            <div class="command">tcpdump -i eth0 -w capture.pcap 'tcp and port 80'</div>
+                            <div class="response"># Captures TCP traffic on port 80 and saves to a file</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 4: Netcat -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-project-diagram tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Netcat</h3>
+                        <div>
+                            <span class="category-badge">Network Utility</span>
+                            <span class="category-badge">Connection Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Netcat (nc) is a versatile networking utility that reads and writes data across network connections using TCP or UDP protocols. It's known as the "Swiss Army knife" of networking tools.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">nc -lvp 4444</div>
+                            <div class="response">listening on [any] 4444 ...</div>
+                            <div class="command">nc 192.168.1.1 80</div>
+                            <div class="response"># Connects to port 80 on specified IP</div>
+                            <div class="command">echo -e "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n" | nc example.com 80</div>
+                            <div class="response"># Sends an HTTP request and displays the response</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 5: Masscan -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-tachometer-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Masscan</h3>
+                        <div>
+                            <span class="category-badge">Port Scanning</span>
+                            <span class="category-badge">High-Speed</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Masscan is an Internet-scale port scanner, designed for scanning the entire Internet in under 5 minutes. It can transmit up to 10 million packets per second.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">masscan -p80,443 192.168.1.0/24 --rate=1000</div>
+                            <div class="response">Starting masscan 1.3.2 at 2023-04-01 11:02:11 GMT
+Initiating SYN Stealth Scan
+Scanning 256 hosts [2 ports/host]
+Discovered open port 80/tcp on 192.168.1.1
+Discovered open port 443/tcp on 192.168.1.1</div>
+                            <div class="command">masscan -p0-65535 192.168.1.1 --rate=5000</div>
+                            <div class="response"># Scans all ports on a single IP at 5,000 packets per second</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 6: Zenmap -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-sitemap tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Zenmap</h3>
+                        <div>
+                            <span class="category-badge">Network Scanning</span>
+                            <span class="category-badge">Visualization</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Zenmap is the official GUI for Nmap, providing a more user-friendly way to run Nmap scans. It includes scan comparison, visualization, and profile management features.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">zenmap</div>
+                            <div class="response"># Launches Zenmap GUI
+# From here you can configure scan type, target, and visualize results</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 7: hping3 -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-paper-plane tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">hping3</h3>
+                        <div>
+                            <span class="category-badge">Packet Crafting</span>
+                            <span class="category-badge">TCP/IP Analysis</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">hping3 is a command-line TCP/IP packet assembler/analyzer that allows security professionals to craft and send custom packets and analyze network responses.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">hping3 -S 192.168.1.1 -p 80</div>
+                            <div class="response"># Sends TCP SYN packets to port 80</div>
+                            <div class="command">hping3 -1 192.168.1.1 -c 5</div>
+                            <div class="response"># Sends 5 ICMP echo requests (like ping)</div>
+                            <div class="command">hping3 --traceroute -V -1 example.com</div>
+                            <div class="response"># Performs a traceroute using ICMP packets with verbose output</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 8: Bettercap -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-random tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Bettercap</h3>
+                        <div>
+                            <span class="category-badge">MITM</span>
+                            <span class="category-badge">Network Analysis</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Bettercap is a powerful, modular and portable Swiss Army knife for network attacks and monitoring. It allows for WiFi, Bluetooth, and ethernet network reconnaissance and MITM attacks.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">bettercap -iface eth0</div>
+                            <div class="response"># Starts bettercap on the eth0 interface</div>
+                            <div class="command">net.probe on</div>
+                            <div class="response"># Within bettercap, discovers hosts on the network</div>
+                            <div class="command">net.sniff on</div>
+                            <div class="response"># Enables packet sniffing</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 9: Ettercap -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-route tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Ettercap</h3>
+                        <div>
+                            <span class="category-badge">MITM</span>
+                            <span class="category-badge">Protocol Analysis</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Ettercap is a comprehensive suite for man-in-the-middle attacks. It features content filtering, active and passive dissection of protocols, and many network and host analysis capabilities.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">ettercap -G</div>
+                            <div class="response"># Launches the Ettercap GUI</div>
+                            <div class="command">ettercap -Tq -M arp:remote /192.168.1.1/ /192.168.1.2/</div>
+                            <div class="response"># Performs ARP poisoning between two specified hosts</div>
+                            <div class="command">ettercap -Tq -M arp:remote /192.168.1.1/ // -P dns_spoof</div>
+                            <div class="response"># ARP poisons the gateway and all hosts, enabling DNS spoofing</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 10: Arpwatch -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-shield-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Arpwatch</h3>
+                        <div>
+                            <span class="category-badge">Network Monitoring</span>
+                            <span class="category-badge">MAC Tracking</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Arpwatch is a computer software tool for monitoring Address Resolution Protocol traffic on a network. It generates logs of observed pairing of IP addresses with MAC addresses along with timestamps.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">sudo service arpwatch start</div>
+                            <div class="response"># Starts the arpwatch service</div>
+                            <div class="command">tail -f /var/log/arpwatch.log</div>
+                            <div class="response"># Monitors the arpwatch log file</div>
+                            <div class="command">arpwatch -i eth0</div>
+                            <div class="response"># Starts arpwatch on the eth0 interface</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="wireless" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-wifi mr-2"></i>Wireless Security Tools</h2>
+            <div class="disclaimer mb-6">
+                <p><strong>Important:</strong> Using these tools to access networks without authorization is illegal. Only practice on networks you own or have explicit permission to test.</p>
+            </div>
+            
+            <p class="mb-6">Wireless security tools allow for the analysis, assessment, and testing of wireless network security. These tools can identify vulnerabilities in wireless implementations, test encryption strength, and analyze wireless traffic.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 11: Aircrack-ng -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-broadcast-tower tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Aircrack-ng</h3>
+                        <div>
+                            <span class="category-badge">WiFi Security</span>
+                            <span class="category-badge">WEP/WPA Analysis</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Aircrack-ng is a network software suite consisting of a detector, packet sniffer, WEP and WPA/WPA2-PSK cracker and analysis tool for 802.11 wireless LANs.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">airmon-ng start wlan0</div>
+                            <div class="response"># Puts wireless interface in monitor mode</div>
+                            <div class="command">airodump-ng wlan0mon</div>
+                            <div class="response"># Displays wireless networks in range
+BSSID              PWR  Beacons   #Data   CH  MB  ENC  CIPHER AUTH ESSID
+00:11:22:33:44:55  -67  241       10      6   54  WPA2 CCMP   PSK  TestNetwork</div>
+                            <div class="command">airodump-ng -c 6 --bssid 00:11:22:33:44:55 -w capture wlan0mon</div>
+                            <div class="response"># Captures packets from specific network on channel 6</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 12: Kismet -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-signal tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Kismet</h3>
+                        <div>
+                            <span class="category-badge">Wireless Detection</span>
+                            <span class="category-badge">Network Mapping</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Kismet is a wireless network detector, sniffer, and intrusion detection system. It works with any wireless card that supports raw monitoring mode and can sniff 802.11a/b/g/n traffic.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">kismet -c wlan0</div>
+                            <div class="response"># Starts Kismet on wlan0 interface</div>
+                            <div class="command">kismet</div>
+                            <div class="response"># Launches Kismet with default settings
+# Access web interface at http://localhost:2501</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 13: Wifite -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-wifi tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Wifite</h3>
+                        <div>
+                            <span class="category-badge">Automated</span>
+                            <span class="category-badge">WiFi Auditing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Wifite is an automated wireless attack tool designed to simplify the process of auditing wireless networks. It automates the use of various tools from the aircrack-ng suite.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">wifite</div>
+                            <div class="response"># Starts automatic wireless auditing
+# Scans for networks, then attacks selected targets</div>
+                            <div class="command">wifite --wpa --dict /path/to/wordlist.txt</div>
+                            <div class="response"># Targets only WPA networks using a specific wordlist</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 14: Reaver -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-unlock-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Reaver</h3>
+                        <div>
+                            <span class="category-badge">WPS</span>
+                            <span class="category-badge">PIN Recovery</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Reaver implements a brute force attack against WiFi Protected Setup (WPS) registrar PINs to recover WPA/WPA2 passphrases.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">wash -i wlan0mon</div>
+                            <div class="response"># Scans for WPS-enabled access points</div>
+                            <div class="command">reaver -i wlan0mon -b 00:11:22:33:44:55 -vv</div>
+                            <div class="response"># Attempts to recover the WPS PIN for specified access point with verbose output</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 15: Airgeddon -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-satellite-dish tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Airgeddon</h3>
+                        <div>
+                            <span class="category-badge">Multi-tool</span>
+                            <span class="category-badge">WiFi Security</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Airgeddon is a multi-use bash script for Linux systems to audit wireless networks. It automates various wireless attacks and has an interactive menu system.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">airgeddon</div>
+                            <div class="response"># Launches airgeddon interactive menu
+# Follow on-screen prompts to select attack modes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 16: Bully -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-bolt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Bully</h3>
+                        <div>
+                            <span class="category-badge">WPS Attack</span>
+                            <span class="category-badge">Brute Force</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Bully is a new implementation of the WPS brute force attack, written in C. It has several advantages over previous tools, including multi-threading and session resumption.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">bully -b 00:11:22:33:44:55 -c 6 -B wlan0mon</div>
+                            <div class="response"># Attempts to brute force WPS PIN on specified access point on channel 6</div>
+                            <div class="command">bully -b 00:11:22:33:44:55 -d -v 3 wlan0mon</div>
+                            <div class="response"># More detailed attack with maximum verbosity</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 17: PixieWPS -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-magic tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">PixieWPS</h3>
+                        <div>
+                            <span class="category-badge">Pixie Dust Attack</span>
+                            <span class="category-badge">WPS</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">PixieWPS is a tool implementing the pixie dust attack and can be used to find the WPS PIN of a vulnerable router in seconds, resulting in the recovery of the WPA/WPA2 passphrase.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">pixiewps -e PKE -r PKR -s e-hash1 -z e-hash2 -a e-nonce -n e-bssid</div>
+                            <div class="response"># Performs pixie dust attack with specified parameters
+# Usually used with the output from Reaver or Bully</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 18: Fern WiFi Cracker -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-leaf tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Fern WiFi Cracker</h3>
+                        <div>
+                            <span class="category-badge">GUI</span>
+                            <span class="category-badge">WiFi Auditing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Fern WiFi Cracker is a GUI-based wireless security auditing application that can crack and recover WEP/WPA/WPA2 keys and perform other network-based attacks.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">fern-wifi-cracker</div>
+                            <div class="response"># Launches the Fern WiFi Cracker GUI
+# Select interface, scan for networks, and choose attack methods</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 19: mdk3 -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-bomb tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">mdk3</h3>
+                        <div>
+                            <span class="category-badge">Deauthentication</span>
+                            <span class="category-badge">DoS Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">mdk3 is a proof-of-concept tool to exploit common IEEE 802.11 protocol weaknesses, including beacon flooding, authentication DoS attacks, and deauthentication attacks.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">mdk3 wlan0mon b -n "Evil_Network"</div>
+                            <div class="response"># Creates a fake access point with the specified name</div>
+                            <div class="command">mdk3 wlan0mon d -b blacklist</div>
+                            <div class="response"># Deauthenticates clients from networks listed in blacklist file</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 20: WiFite2 -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-power-off tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Wifite2</h3>
+                        <div>
+                            <span class="category-badge">Automated</span>
+                            <span class="category-badge">WiFi Auditing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Wifite2 is an improved version of the original Wifite with more features, better error handling, and enhanced automation for wireless network auditing.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">wifite2</div>
+                            <div class="response"># Starts wifite2 with automatic interface selection and scanning</div>
+                            <div class="command">wifite2 --crack --dict /path/to/wordlist.txt</div>
+                            <div class="response"># Attempts to crack captured handshakes using specified wordlist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-lg mt-8">
+                <h4 class="text-xl font-bold mb-4 cyber-subheader">Wireless Security Best Practices</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="text-lg font-semibold mb-2 text-blue-400">For Network Administrators</h5>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Use WPA3 when available or at minimum WPA2 with a strong password</li>
+                            <li>Change default router credentials immediately</li>
+                            <li>Disable WPS (Wi-Fi Protected Setup) or use more secure methods</li>
+                            <li>Implement MAC address filtering for enhanced security</li>
+                            <li>Regularly update router firmware to patch vulnerabilities</li>
+                            <li>Use a non-default SSID and consider hiding it in high-security environments</li>
+                            <li>Segment guest networks from internal networks</li>
+                            <li>Use enterprise authentication (802.1X) where appropriate</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-lg font-semibold mb-2 text-green-400">For Security Testers</h5>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Always obtain explicit permission before testing</li>
+                            <li>Document all testing activities thoroughly</li>
+                            <li>Use isolated test environments when possible</li>
+                            <li>Be aware of legal implications and jurisdictional laws</li>
+                            <li>Avoid interference with production networks</li>
+                            <li>Report vulnerabilities responsibly and confidentially</li>
+                            <li>Provide clear remediation steps with findings</li>
+                            <li>Remove sensitive data after testing is completed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="web" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-globe mr-2"></i>Web Application Security Tools</h2>
+            <p class="mb-6">Web application security tools help identify and exploit vulnerabilities in web applications. These tools are essential for testing security controls, identifying vulnerabilities, and ensuring web applications are secure against common attack vectors.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 21: Burp Suite -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-spider tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Burp Suite</h3>
+                        <div>
+                            <span class="category-badge">Proxy</span>
+                            <span class="category-badge">Web Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Burp Suite is an integrated platform for performing security testing of web applications. It functions as a proxy server and can be used to intercept, inspect, and modify traffic between your browser and the target application.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">burpsuite</div>
+                            <div class="response"># Launches Burp Suite GUI
+# Configure your browser to use Burp as a proxy (typically 127.0.0.1:8080)
+# Intercept requests and analyze web application behavior</div>
+                            <div class="command">java -jar burpsuite_pro.jar</div>
+                            <div class="response"># Alternative way to launch Burp Suite with Java</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 22: OWASP ZAP -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-file-code tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">OWASP ZAP</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Scanner</span>
+                            <span class="category-badge">Penetration Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">The OWASP Zed Attack Proxy (ZAP) is an integrated penetration testing tool for finding vulnerabilities in web applications. It provides automated scanners and tools for manual testing.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">zaproxy</div>
+                            <div class="response"># Launches ZAP GUI</div>
+                            <div class="command">zap-cli quick-scan --self-contained --start-options '-config api.disablekey=true' http://example.com</div>
+                            <div class="response"># Runs a quick scan from the command line against example.com</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 23: Nikto -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-search-plus tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Nikto</h3>
+                        <div>
+                            <span class="category-badge">Web Scanner</span>
+                            <span class="category-badge">Vulnerability Detection</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Nikto is an open source web server scanner which performs comprehensive tests against web servers for multiple vulnerabilities, including outdated software and dangerous files.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">nikto -h http://example.com</div>
+                            <div class="response">- Nikto v2.1.6
+- Target IP:          93.184.216.34
+- Target Hostname:    example.com
+- Target Port:        80
+- Start Time:         2023-04-01 12:00:00
+-----------
++ Server: ECS (dcb/7F84)
++ Retrieved x-powered-by header: PHP/7.4.3
++ Uncommon header 'x-cache' found, with contents: HIT
++ /admin/: Admin login page/section found.</div>
+                            <div class="command">nikto -h example.com -ssl -port 443</div>
+                            <div class="response"># Scans an HTTPS site on port 443</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 24: Dirb -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-sitemap tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Dirb</h3>
+                        <div>
+                            <span class="category-badge">Content Discovery</span>
+                            <span class="category-badge">Directory Bruteforce</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Dirb is a web content scanner that uses a dictionary-based approach to find hidden directories and files on web servers by sending requests and analyzing responses.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">dirb http://example.com</div>
+                            <div class="response">DIRB v2.22    
+By The Dark Raver
+-----------------
+START_TIME: Mon Apr 1 12:00:00 2023
+URL_BASE: http://example.com/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+-----------------
+GENERATED WORDS: 4612
+---- Scanning URL: http://example.com/ ----
++ http://example.com/admin (CODE:200|SIZE:1234)
++ http://example.com/css (CODE:200|SIZE:1122)
++ http://example.com/js (CODE:200|SIZE:512)</div>
+                            <div class="command">dirb http://example.com /usr/share/wordlists/dirb/big.txt</div>
+                            <div class="response"># Uses a different wordlist for more thorough scanning</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 25: SQLmap -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-database tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">SQLmap</h3>
+                        <div>
+                            <span class="category-badge">SQL Injection</span>
+                            <span class="category-badge">Database Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">SQLmap is an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over database servers.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">sqlmap -u "http://example.com/page.php?id=1" --dbs</div>
+                            <div class="response"># Tests the URL for SQL injection and enumerates databases if vulnerable</div>
+                            <div class="command">sqlmap -u "http://example.com/page.php?id=1" -D database_name -T users --dump</div>
+                            <div class="response"># Dumps the contents of the 'users' table from the specified database</div>
+                            <div class="command">sqlmap -r request.txt --risk=3 --level=5</div>
+                            <div class="response"># Tests a captured request (from Burp/ZAP) with high risk and level settings</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 26: WPScan -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fab fa-wordpress tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">WPScan</h3>
+                        <div>
+                            <span class="category-badge">WordPress</span>
+                            <span class="category-badge">CMS Scanner</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">WPScan is a black box WordPress vulnerability scanner that can identify vulnerabilities, enumerate users, and test password strength in WordPress installations.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">wpscan --url http://example.com</div>
+                            <div class="response"># Scans a WordPress site for vulnerabilities and outdated components</div>
+                            <div class="command">wpscan --url http://example.com --enumerate u</div>
+                            <div class="response"># Enumerates WordPress users</div>
+                            <div class="command">wpscan --url http://example.com --passwords /path/to/wordlist.txt --usernames admin</div>
+                            <div class="response"># Performs a password brute force attack against the admin user</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 27: Gobuster -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-folder-open tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Gobuster</h3>
+                        <div>
+                            <span class="category-badge">Directory Enumeration</span>
+                            <span class="category-badge">Content Discovery</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Gobuster is a tool used to brute-force URIs (directories and files) in web sites, DNS subdomains, and virtual host names. It's known for its speed and efficiency.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">gobuster dir -u http://example.com -w /usr/share/wordlists/dirb/common.txt</div>
+                            <div class="response">Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://example.com
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Timeout:                 10s
+===============================================================
+2023/04/01 12:00:00 Starting gobuster in directory enumeration mode
+===============================================================
+/admin                (Status: 200) [Size: 1234]
+/css                  (Status: 200) [Size: 1122]
+/js                   (Status: 200) [Size: 512]</div>
+                            <div class="command">gobuster dns -d example.com -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt</div>
+                            <div class="response"># Performs DNS subdomain enumeration</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 28: Dirsearch -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-search-location tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Dirsearch</h3>
+                        <div>
+                            <span class="category-badge">Web Path Scanner</span>
+                            <span class="category-badge">Content Discovery</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Dirsearch is a mature command-line tool designed for brute forcing directories and files in webservers, with a modern Python implementation and many features.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">dirsearch -u http://example.com</div>
+                            <div class="response"># Scans for common directories and files</div>
+                            <div class="command">dirsearch -u http://example.com -e php,html,js</div>
+                            <div class="response"># Searches for files with specific extensions</div>
+                            <div class="command">dirsearch -u http://example.com -w /path/to/wordlist.txt -t 50</div>
+                            <div class="response"># Uses custom wordlist with 50 threads</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 29: Commix -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-terminal tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Commix</h3>
+                        <div>
+                            <span class="category-badge">Command Injection</span>
+                            <span class="category-badge">Web Vulnerability</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Commix (Command Injection Exploiter) is an automated tool that can help detect and exploit command injection vulnerabilities in web applications.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">commix --url="http://example.com/vulnerable.php?cmd=id"</div>
+                            <div class="response"># Tests for command injection at the specified parameter</div>
+                            <div class="command">commix --url="http://example.com/login.php" --data="username=admin&password=pass&submit=Login" --cookie="PHPSESSID=abc123"</div>
+                            <div class="response"># Tests POST parameters with cookies</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 30: XSSer -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-code tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">XSSer</h3>
+                        <div>
+                            <span class="category-badge">XSS Testing</span>
+                            <span class="category-badge">Web Vulnerability</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">XSSer is an automatic framework to detect, exploit and report XSS vulnerabilities in web applications. It contains multiple attack vectors and modern techniques.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">xsser --url "http://example.com/vulnerable.php?p=XSS"</div>
+                            <div class="response"># Tests for XSS vulnerabilities in the 'p' parameter</div>
+                            <div class="command">xsser --url "http://example.com/search.php" --data "search=XSS" --method POST</div>
+                            <div class="response"># Tests POST parameter for XSS vulnerabilities</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-lg mt-8">
+                <h4 class="text-xl font-bold mb-4 cyber-subheader">Common Web Vulnerabilities</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h5 class="text-lg font-semibold mb-2 text-pink-400">Injection Vulnerabilities</h5>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>SQL Injection</strong>: Allowing attackers to execute malicious SQL queries</li>
+                            <li><strong>Command Injection</strong>: Executing system commands through web applications</li>
+                            <li><strong>LDAP Injection</strong>: Manipulating LDAP queries to access unauthorized data</li>
+                            <li><strong>XPath Injection</strong>: Manipulating XML queries and data structures</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-lg font-semibold mb-2 text-blue-400">Client-Side Vulnerabilities</h5>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Cross-Site Scripting (XSS)</strong>: Injecting malicious client-side scripts</li>
+                            <li><strong>Cross-Site Request Forgery (CSRF)</strong>: Forcing users to perform unwanted actions</li>
+                            <li><strong>DOM-based Vulnerabilities</strong>: Manipulating the Document Object Model</li>
+                            <li><strong>UI Redressing (Clickjacking)</strong>: Tricking users into clicking hidden elements</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-lg font-semibold mb-2 text-green-400">Authentication & Authorization</h5>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li><strong>Broken Authentication</strong>: Weak or improperly implemented authentication</li>
+                            <li><strong>Session Management Flaws</strong>: Improper handling of user sessions</li>
+                            <li><strong>Insecure Direct Object References</strong>: Accessing unauthorized resources</li>
+                            <li><strong>Missing Function Level Access Control</strong>: Improper authorization checks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vuln" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-bug mr-2"></i>Vulnerability Assessment Tools</h2>
+            <p class="mb-6">Vulnerability assessment tools help identify security weaknesses in systems, networks, and applications. These tools scan for known vulnerabilities, misconfigured services, and security issues that could be exploited by attackers.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 31: OpenVAS -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-shield-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">OpenVAS</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Scanner</span>
+                            <span class="category-badge">Security Assessment</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">OpenVAS (Open Vulnerability Assessment System) is a framework of services and tools for vulnerability scanning and vulnerability management, offering a comprehensive solution for vulnerability assessment.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">gvm-setup</div>
+                            <div class="response"># Sets up the GVM/OpenVAS system</div>
+                            <div class="command">gvm-start</div>
+                            <div class="response"># Starts the OpenVAS services
+# Access the web interface at https://127.0.0.1:9392</div>
+                            <div class="command">gvm-check-setup</div>
+                            <div class="response"># Checks if the setup is correct</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 32: Nessus -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-tasks tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Nessus</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Scanner</span>
+                            <span class="category-badge">Compliance Checks</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Nessus is a proprietary vulnerability scanner that helps identify vulnerabilities, configuration issues, and malware that hackers could use to penetrate your network.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">/etc/init.d/nessusd start</div>
+                            <div class="response"># Starts the Nessus service</div>
+                            <div class="command">firefox https://localhost:8834</div>
+                            <div class="response"># Opens the Nessus web interface
+# Requires installation and registration</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 33: Lynis -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-clipboard-check tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Lynis</h3>
+                        <div>
+                            <span class="category-badge">System Auditing</span>
+                            <span class="category-badge">Hardening</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Lynis is a security auditing tool for Unix/Linux systems. It performs an in-depth security scan and provides recommendations for hardening the system.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">lynis audit system</div>
+                            <div class="response"># Performs a complete system audit
+[+] Initializing program
+[+] Detecting OS...
+[+] Checking Lynis update...
+[+] Detecting system...
+[+] Checking available tools...
+[+] Program version: 3.0.6
+[+] Auditing and scanning system...
+...
+[+] Hardening index : [65] [###################    ]
+[+] Tests performed : 235
+[+] Plugins enabled : 0</div>
+                            <div class="command">lynis audit system --quiet</div>
+                            <div class="response"># Performs audit with minimal output</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 34: Nexpose -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-search tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Nexpose</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Management</span>
+                            <span class="category-badge">Risk Assessment</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Nexpose is a vulnerability management solution that combines vulnerability and asset management capabilities with vulnerability checking, risk classification, and integrated remediation workflows.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">/opt/rapid7/nexpose/nsc/nsc.sh</div>
+                            <div class="response"># Starts the Nexpose Security Console
+# Access web interface typically at https://localhost:3780</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 35: Retina -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-eye tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Retina</h3>
+                        <div>
+                            <span class="category-badge">Network Security Scanner</span>
+                            <span class="category-badge">Vulnerability Assessment</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Retina Network Security Scanner identifies known vulnerabilities, configuration issues, and missing patches across operating systems, applications, devices, and virtual environments.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">retina-scan.sh</div>
+                            <div class="response"># Commercial tool requiring proper installation and licensing
+# Usually accessed through GUI or web interface</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 36: OWASP Dependency-Check -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-link tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">OWASP Dependency-Check</h3>
+                        <div>
+                            <span class="category-badge">Software Composition Analysis</span>
+                            <span class="category-badge">Dependency Scanning</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">OWASP Dependency-Check is a software composition analysis tool that detects publicly disclosed vulnerabilities in project dependencies, helping identify vulnerable components in your applications.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">dependency-check --project "My Project" --scan /path/to/application</div>
+                            <div class="response"># Scans application dependencies for vulnerabilities</div>
+                            <div class="command">dependency-check --project "Web App" --scan /var/www/html --format HTML --out /reports</div>
+                            <div class="response"># Scans web application and outputs HTML report</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 37: OSSEC -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-shield-alt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">OSSEC</h3>
+                        <div>
+                            <span class="category-badge">Host-based IDS</span>
+                            <span class="category-badge">File Integrity Monitoring</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">OSSEC is a host-based intrusion detection system (HIDS) that performs log analysis, integrity checking, Windows registry monitoring, rootkit detection, real-time alerting and active response.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">/var/ossec/bin/ossec-control start</div>
+                            <div class="response"># Starts OSSEC services</div>
+                            <div class="command">/var/ossec/bin/ossec-control status</div>
+                            <div class="response">ossec-analysisd is running...
+ossec-logcollector is running...
+ossec-remoted is running...
+ossec-syscheckd is running...
+ossec-monitord is running...
+ossec-execd is running...</div>
+                            <div class="command">/var/ossec/bin/agent_control -l</div>
+                            <div class="response"># Lists connected agents</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 38: Vuls -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-bolt tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Vuls</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Scanner</span>
+                            <span class="category-badge">Agentless</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Vuls is an agentless vulnerability scanner for Linux/FreeBSD that automatically detects security vulnerabilities and creates notifications. It's fast, reliable, and has minimal impact on system resources.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">vuls configtest</div>
+                            <div class="response"># Tests your Vuls configuration</div>
+                            <div class="command">vuls scan</div>
+                            <div class="response"># Scans target servers defined in config.toml
+Start scanning
+...
+localhost (localhost)
+=======================
+CVE-2022-1111    5.9 MEDIUM (AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H)
+CVE-2022-2222    7.5 HIGH (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N)
+...</div>
+                            <div class="command">vuls report -format-json -to-email</div>
+                            <div class="response"># Sends scan results by email in JSON format</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 39: Metasploit Pro -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-rocket tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Metasploit Pro</h3>
+                        <div>
+                            <span class="category-badge">Penetration Testing</span>
+                            <span class="category-badge">Vulnerability Validation</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Metasploit Pro is a commercial penetration testing solution that helps security teams efficiently verify vulnerabilities, manage security assessments, and improve security awareness.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">/opt/metasploit/msfpro</div>
+                            <div class="response"># Starts Metasploit Pro
+# Access web interface at https://localhost:3790</div>
+                            <div class="command">msfpro</div>
+                            <div class="response"># Alternative command to start Metasploit Pro if in PATH</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 40: Vulners Scanner -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-microscope tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Vulners Scanner</h3>
+                        <div>
+                            <span class="category-badge">Vulnerability Database</span>
+                            <span class="category-badge">Package Auditing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Vulners Scanner checks installed software packages against the Vulners database of vulnerabilities to identify security issues in your system packages and dependencies.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">python3 vulners_scanner.py</div>
+                            <div class="response"># Scans system for vulnerable packages</div>
+                            <div class="command">python3 vulners_scanner.py --output json</div>
+                            <div class="response"># Outputs results in JSON format</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exploitation" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-user-secret mr-2"></i>Exploitation Tools</h2>
+            <div class="disclaimer mb-6">
+                <p><strong>Important:</strong> These tools are designed for authorized security testing only. Using exploitation tools against systems without explicit permission is illegal and unethical.</p>
+            </div>
+            
+            <p class="mb-6">Exploitation tools are used to leverage known vulnerabilities in systems, applications, or networks. These tools help security professionals validate vulnerabilities and assess the potential impact of successful exploitation in controlled environments.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 41: Metasploit Framework -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-rocket tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Metasploit Framework</h3>
+                        <div>
+                            <span class="category-badge">Exploitation</span>
+                            <span class="category-badge">Penetration Testing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Metasploit Framework is a powerful open-source platform for developing, testing, and executing exploits. It contains a database of ready-to-use exploits and a robust infrastructure for custom exploit development.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">msfconsole</div>
+                            <div class="response"># Launches the Metasploit console
+   
+      
+          .~+P```````-o+:.                                      -o+:.
+.+oooyysyyssyyssyddh++os-`````                        ```````````````
++++++++++++++++++++++++sydhyoso-`````.```           ``````````````````
+++++/++++++++++++++++++++++++ossyso/.         ````````````````````````
+Metasploit Framework 6.2.26-dev                                            
+149042 exploits - 42378 auxiliary - 14831 post
+962 payloads - 46 encoders - 11 nops
+7517 evasion    
+      </div>
+                            <div class="command">use exploit/windows/smb/ms17_010_eternalblue</div>
+                            <div class="response"># Selects an exploit to use</div>
+                            <div class="command">set RHOSTS 192.168.1.10</div>
+                            <div class="response"># Sets the target IP address</div>
+                            <div class="command">run</div>
+                            <div class="response"># Executes the exploit</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 42: BeEF -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-bullseye tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">BeEF</h3>
+                        <div>
+                            <span class="category-badge">Browser Exploitation</span>
+                            <span class="category-badge">Client-side Attacks</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">The Browser Exploitation Framework (BeEF) is a penetration testing tool that focuses on the web browser, allowing security professionals to assess the security posture of a target by exploiting browser vulnerabilities.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">beef-xss</div>
+                            <div class="response"># Starts the BeEF server
+[*] Please wait for the BeEF service to start...
+[*] You might need to refresh your browser once it starts...
+
+[*] BeEF is starting up...
+[*] Web UI: http://127.0.0.1:3000/ui/panel
+[*] Hook: <script src="http://127.0.0.1:3000/hook.js"></script></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 43: Armitage -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-chess-knight tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Armitage</h3>
+                        <div>
+                            <span class="category-badge">Metasploit GUI</span>
+                            <span class="category-badge">Visualization</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Armitage is a graphical cyber attack management tool for the Metasploit Framework that visualizes targets, recommends exploits, and exposes advanced post-exploitation features.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">armitage</div>
+                            <div class="response"># Launches Armitage GUI
+# Connect to Metasploit instance through the GUI interface</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 44: PowerSploit -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fab fa-windows tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">PowerSploit</h3>
+                        <div>
+                            <span class="category-badge">PowerShell Framework</span>
+                            <span class="category-badge">Post-Exploitation</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">PowerSploit is a collection of PowerShell modules that can be used to aid penetration testers during all phases of an assessment, with a focus on post-exploitation techniques.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">Import-Module PowerSploit</div>
+                            <div class="response"># Imports PowerSploit modules in PowerShell
+# Must be executed in a PowerShell environment</div>
+                            <div class="command">Get-Command -Module PowerSploit</div>
+                            <div class="response"># Lists available commands from PowerSploit</div>
+                            <div class="command">Invoke-Mimikatz</div>
+                            <div class="response"># Example of a PowerSploit credential dumping function</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 45: Social Engineering Toolkit (SET) -->
+                <div class="tool-card p-4" data-complexity="beginner">
+                    <div class="tool-complexity complexity-beginner"><i class="fas fa-seedling mr-1"></i>Beginner</div>
+                    <div class="text-center">
+                        <i class="fas fa-users-cog tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Social Engineering Toolkit</h3>
+                        <div>
+                            <span class="category-badge">Social Engineering</span>
+                            <span class="category-badge">Phishing</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">The Social Engineering Toolkit (SET) is an open-source penetration testing framework designed for social engineering. It contains various attack vectors that allow security professionals to test the effectiveness of user awareness.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">setoolkit</div>
+                            <div class="response"># Launches the Social Engineering Toolkit
+          _____ .____    ._______
+         / ____\|    |   |   \   \
+         \____ \|    |   |   |   |
+         /     \|    |___|   |   |
+        /______/|_______ \___|___|
+         \_     _ /     \ \_____
+          / \ /\/ \       \ /    \
+          \_/_/   \_______//____/
+  
+Select from the menu:
+1) Social-Engineering Attacks
+2) Penetration Testing (Fast-Track)
+3) Third Party Modules
+4) Update SET
+5) Help, Credits, and About
+6) Exit</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 46: Empire -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-flag tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Empire</h3>
+                        <div>
+                            <span class="category-badge">Post-Exploitation</span>
+                            <span class="category-badge">PowerShell Agents</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Empire is a pure PowerShell post-exploitation agent with compatibility for Linux/macOS. It allows for stealthy communication and extensive post-exploitation modules for Windows targets.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">powershell-empire server</div>
+                            <div class="response"># Starts the Empire server</div>
+                            <div class="command">powershell-empire client</div>
+                            <div class="response"># Connects to Empire server
+Empire> 
+[*] Loading configuration...
+[*] Loading plugins...
+[*] Loading Empire Framework...
+
+                           ⊙
+                           \
+                          --[_]--
+                                                
+   +-----------+
+   | EMPIRE    |
+   +-----------+
+   | | |
+   | | |
+   |_| |
+   |___|
+
+   Version 4.3.2
+</div>
+                            <div class="command">listeners</div>
+                            <div class="response"># Manages Empire listeners</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 47: RouterSploit -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-router tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">RouterSploit</h3>
+                        <div>
+                            <span class="category-badge">Router Exploitation</span>
+                            <span class="category-badge">IoT Security</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">RouterSploit is an open-source exploitation framework dedicated to embedded devices like routers and IoT devices. It contains various exploits, scanners, and brute force mechanisms specifically designed for these devices.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">rsf</div>
+                            <div class="response"># Launches RouterSploit Framework
+ ______            _            _____       _       _ _
+ | ___ \          | |          /  ___|     | |     (_) |
+ | |_/ /___  _   _| |_ ___ _ __\ `--. _ __ | | ___  _| |_
+ |    // _ \| | | | __/ _ \ '__|`--. \ '_ \| |/ _ \| | __|
+ | |\ \ (_) | |_| | ||  __/ |  /\__/ / |_) | | (_) | | |_
+ \_| \_\___/ \__,_|\__\___|_|  \____/| .__/|_|\___/|_|\__|
+                                     | |
+                                     |_|
+
+       Exploits: 112 Scanners: 12 Creds: 13 Generic: 9 Payloads: 2
+       
+rsf ></div>
+                            <div class="command">use scanners/autopwn</div>
+                            <div class="response"># Uses the autopwn scanner to identify vulnerable devices</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 48: Koadic -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-virus tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Koadic</h3>
+                        <div>
+                            <span class="category-badge">COM Command</span>
+                            <span class="category-badge">Post-Exploitation</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Koadic is a Windows post-exploitation rootkit similar to other penetration testing tools but utilizes Windows Script Host, providing an interface similar to Metasploit with a JavaScript-based agent.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">koadic</div>
+                            <div class="response"># Launches Koadic C3 COM Command & Control
+[?] .../.../.../.../.../.../.../.../.../.\
+[?] .../.../.../.../.../.../.../.../.../.\
+[?] .../.../.../.../.../.../.../.../.../.\
+[?] .../.|.../.../.../.../.../.../.../...\
+[?] .../.|.\./.../.../.../.../.../.../...\
+[?] ....\_|_/.../.../.../.../.../.../.../.\
+[?] .../.|_|__|.../.../.../.../.../.../.../
+[?] /.\'.|_|__|.\./.../.../.../.../.../.../
+[?] \.|`.[_|__|.|.\./.../.../.../.../.../..|
+[?] ..\`.[|_|__|.\.\.../.../.../.../..././|
+[?] ..|.\`[|_|__|.|`|../.../.../.../.../|..|
+[?] .|..|\`[|_|__|_|/.../.../.../.../.|...|
+[?] _|__|_`[_|__|,´.../.../.../.../.|.....|
+[?] |,´...\`[|_|.|`\./.../.../.../.|......|
+[?] |......\|.|.|./.../.../.../.../|......|</div>
+                            <div class="command">help</div>
+                            <div class="response"># Displays available commands</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 49: Shellter -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-file-code tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Shellter</h3>
+                        <div>
+                            <span class="category-badge">Dynamic Shellcode</span>
+                            <span class="category-badge">PE Infection</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Shellter is a dynamic shellcode injection tool that can be used to create stealth backdoors for Windows applications by re-engineering native executables to be undetectable by antivirus solutions.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">shellter</div>
+                            <div class="response"># Launches Shellter
+shellter v7.0 - by kyREcon
+Official Website at: https://www.shellterproject.com
+Copyright (C) 2014-2019 - All rights reserved
+
+[A]utomatic Mode
+[M]anual Mode
+[Q]uit
+
+shellter >> </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tool 50: Cobalt Strike -->
+                <div class="tool-card p-4" data-complexity="advanced">
+                    <div class="tool-complexity complexity-advanced"><i class="fas fa-skull mr-1"></i>Advanced</div>
+                    <div class="text-center">
+                        <i class="fas fa-crosshairs tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">Cobalt Strike</h3>
+                        <div>
+                            <span class="category-badge">Red Team</span>
+                            <span class="category-badge">Advanced Exploitation</span>
+                        </div>
+                    </div>
+                    <p class="mb-4">Cobalt Strike is a commercial, full-featured penetration testing tool that leverages "Beacon" payloads to model advanced attackers. It's widely used for adversary simulation and red team operations.</p>
+                    <div class="terminal mt-4">
+                        <div class="terminal-content">
+                            <div class="command">./teamserver 192.168.1.100 password</div>
+                            <div class="response"># Starts Cobalt Strike team server on specified IP with password
+# Commercial tool requiring proper licensing</div>
+                            <div class="command">java -jar cobaltstrike.jar</div>
+                            <div class="response"># Launches Cobalt Strike client to connect to team server</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="password" class="mb-12 hidden">
+            <h2 class="text-3xl font-bold section-title cyber-header"><i class="fas fa-key mr-2"></i>Password Security Tools</h2>
+            <div class="disclaimer mb-6">
+                <p><strong>Important:</strong> Password testing tools should only be used for recovering your own passwords or in authorized penetration testing environments. Unauthorized use is illegal.</p>
+            </div>
+            
+            <p class="mb-6">Password security tools help assess the strength of password policies, test password hashing mechanisms, and recover passwords when authorized. These tools are essential for testing the security of authentication systems.</p>
+            
+            <div class="grid-container">
+                <!-- Tool 51: John the Ripper -->
+                <div class="tool-card p-4" data-complexity="intermediate">
+                    <div class="tool-complexity complexity-intermediate"><i class="fas fa-user-ninja mr-1"></i>Intermediate</div>
+                    <div class="text-center">
+                        <i class="fas fa-hammer tool-icon"></i>
+                        <h3 class="text-xl font-bold mb-2 cyber-subheader">John the Ripper</h3>
